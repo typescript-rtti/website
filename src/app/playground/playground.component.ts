@@ -1,4 +1,4 @@
-import { Component, ContentChild, ElementRef, ViewChild } from "@angular/core";
+import { Component, ContentChild, ElementRef, Input, ViewChild } from "@angular/core";
 import { EditorComponent } from "ngx-monaco-editor";
 import { PlaygroundService } from "../playground.service";
 import type * as monacoT from 'monaco-editor';
@@ -19,6 +19,24 @@ export class PlaygroundComponent {
     
     mode : string = 'ts';
 
+    private _enablePersistence = false;
+
+    @Input() 
+    get enablePersistence() { return this._enablePersistence; }
+
+    set enablePersistence(value) {
+        this._enablePersistence = value;
+        if (this._enablePersistence) {
+            this.loadFromPersistence();
+        }
+    }
+
+    loadFromPersistence() {
+        let data = window.location.hash.slice(1);
+        console.log(`Loading from: ${data}`);
+        this.source = atob(data);
+    }
+
     @ViewChild('sourceEditor')
     sourceEditor : EditorComponent;
 
@@ -32,8 +50,17 @@ export class PlaygroundComponent {
         this.playground.load();
     }
 
+    private loadFromCodeInputTimeout;
+
     ngAfterViewInit() {
-        setTimeout(() => {
+        if (this.enablePersistence) {
+            this.loadFromPersistence();
+        }
+
+        this.loadFromCodeInputTimeout = setTimeout(() => {
+            if (this._sourceSet)
+                return;
+                
             let src = this.codeInput.nativeElement.querySelector('pre').innerText;
 
             src = src.replace(/ +$/g, '');
@@ -95,7 +122,11 @@ export class PlaygroundComponent {
     private compileTimeout;
     compiled = true;
 
+    private _sourceSet = false;
+
     set source(value) {
+        this._sourceSet = true;
+        clearTimeout(this.loadFromCodeInputTimeout);
         this._source = value;
 
         this.compiled = false;
@@ -103,6 +134,12 @@ export class PlaygroundComponent {
         this.compileTimeout = setTimeout(async () => {
             await this.compileAndRun();
             this.compiled = true;
+
+            if (this.enablePersistence) {
+                console.log(`Persisting to URL`);
+                window.history.replaceState(undefined, undefined, `#${btoa(this._source)}`);
+            }
+
         }, 100)
     }
 
