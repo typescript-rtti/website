@@ -1,0 +1,19 @@
+<rtti-playground><pre><![CDATA[
+    import { reflect } from 'typescript-rtti';
+
+    class A {
+        foo() { return true ? 123 : 'foo'; }
+    }
+
+    console.log(reflect(A).getMethod('foo').returnType);
+]]></pre></rtti-playground>
+
+<h1>Runtime Types for Typescript</h1>
+
+<p>
+    <code>typescript-rtti</code> provides comprehensive runtime types for Typescript.
+</p>
+
+<hr class="centered" />
+
+<rtti-github-markdown path="README.md"></rtti-github-markdown>

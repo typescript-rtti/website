@@ -1,0 +1,38 @@
+<div #divider class="divider">
+    <div id="source">
+        <nav mat-tab-nav-bar mat-align-tabs="end">
+            <a mat-tab-link (click)="mode = 'ts'" [active]="mode === 'ts'">
+                Typescript
+            </a>
+            <a mat-tab-link (click)="mode = 'js'" [active]="mode === 'js'">
+                Emitted JS
+            </a>
+        </nav>
+        
+        <div id="tab-container">
+            <div #sizer [class.hidden]="mode !== 'ts'" class="hidable">
+                <ngx-monaco-editor 
+                    #sourceEditor
+                    [options]="monacoOptionsTS"
+                    (onInit)="monacoReady()"
+                    [(ngModel)]="source"></ngx-monaco-editor>
+            </div>
+
+            <ngx-monaco-editor 
+                class="hidable"
+                [class.hidden]="mode !== 'js'"
+                id="js"
+                [options]="monacoOptionsJS"
+                [(ngModel)]="js"
+                ></ngx-monaco-editor>
+        </div>
+    </div>
+    
+    <header>
+        Output:
+    </header>
+    <pre id="output">{{output}}</pre>
+</div>
+<div id="code-input" #codeInput>
+    <ng-content selector="code"></ng-content>
+</div>

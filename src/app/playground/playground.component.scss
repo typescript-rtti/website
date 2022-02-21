@@ -1,0 +1,119 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+    margin: 4em;
+
+    border-radius: 5px;
+    color: black; 
+    box-shadow: 2px 8px 20px 7px rgb(0 0 0 / 11%);
+}
+
+.divider {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 1em;
+    align-items: stretch;
+
+    #source {
+        flex-grow: 1;
+        height: 100%;
+    }
+}
+
+#code-input {
+    display: none;
+}
+
+#source {
+    display: flex;
+    flex-direction: column;
+
+    label {
+        height: 49px;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+    }
+
+    ngx-monaco-editor {
+        flex-grow: 1;
+    }
+}
+
+mat-tab-group {
+    height: 100%;
+}
+
+#output {
+    font-size: 20px;
+}
+
+@media (max-width: 800px) {
+    :host {
+        padding: 1em;
+        margin: 4em 1em;
+    }
+}
+
+@media (max-width: 500px) {
+    :host {
+        padding: 1em;
+        margin: 4em 0.25em;
+    }
+}
+
+#js {
+    height: 40em;
+}
+
+.hidable {
+    animation: 300ms show;
+    animation-fill-mode: both;
+    position: relative;
+    z-index: 2;
+}
+
+nav {
+    // position: relative;
+    // z-index: 10;
+    // background: white;
+}
+
+.hidden {
+    animation: 300ms hide;
+    animation-fill-mode: both;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+@keyframes show {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes hide {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+}
+
+#tab-container {
+    position: relative;
+}

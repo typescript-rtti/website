@@ -1,1 +1,66 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { 
+    margin: 1em; 
+    font-family: Roboto, "Helvetica Neue", sans-serif; 
+}
+
+a {
+    $color: #3c5ecd;
+    color: $color;
+    text-decoration: none;
+
+    &:visited, &:focus, &:active {
+        color: $color;
+    }
+}
+
+.mat-tab-body-wrapper {
+    flex-grow: 1;
+}
+
+.mat-tab-body-content {
+    overflow: hidden !important;
+}
+
+blockquote {
+    border-left: 4px solid #ccc;
+    padding-left: 0.5em;
+    margin-left: 0;
+}
+
+pre {
+    border: 1px solid #999;
+    background: #e7e7e7;
+    margin: 6px;
+    padding: 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+@media (max-width: 500px) {
+    body {
+        margin: 0;
+    }
+}
+
+app-root {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    width: 1200px;
+    max-width: 100%;
+}
+
+hr.centered {
+    width: 300px;
+    max-width: 100%;
+    margin: 5em auto;
+    display: block;
+}
+
+.spacer {
+    flex-grow: 1;
+}
