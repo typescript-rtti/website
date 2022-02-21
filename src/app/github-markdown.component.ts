@@ -7,7 +7,7 @@ import { combineLatest } from "rxjs";
     template: `
         <div class="markdown" [innerHTML]="readme | markdownToHtml | trustHtml"></div>
         <footer>
-            <a [href]="url">View on Github</a>
+            <a [href]="githubUrl">View on Github</a>
         </footer>
     `,
     styles: [
@@ -35,6 +35,10 @@ export class GithubMarkdownComponent {
 
     get url() {
         return `https://raw.githubusercontent.com/typescript-rtti/typescript-rtti/main/${this.path}`;
+    }
+
+    get githubUrl() {
+        return `https://github.com/typescript-rtti/typescript-rtti/blob/main/${this.path}`;
     }
 
     async reload() {
