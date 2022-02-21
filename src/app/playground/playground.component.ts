@@ -33,6 +33,8 @@ export class PlaygroundComponent {
 
     loadFromPersistence() {
         let data = window.location.hash.slice(1);
+        if (!data || data === '')
+            return;
         console.log(`Loading from: ${data}`);
         this.source = atob(data);
     }
