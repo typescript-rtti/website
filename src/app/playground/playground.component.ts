@@ -18,7 +18,7 @@ export class PlaygroundComponent {
     }
     
     mode : string = 'ts';
-    
+
     @ViewChild('sourceEditor')
     sourceEditor : EditorComponent;
 
@@ -103,7 +103,7 @@ export class PlaygroundComponent {
         this.compileTimeout = setTimeout(async () => {
             await this.compileAndRun();
             this.compiled = true;
-        }, 1000)
+        }, 100)
     }
 
     async compileAndRun() {
