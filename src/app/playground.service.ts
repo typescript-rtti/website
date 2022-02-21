@@ -1,9 +1,10 @@
 import { Injectable } from "@angular/core";
-import type * as tst from 'typescript';
+import type * as tst from '../../supported-typescript/node_modules/typescript';
 
 declare var ts : typeof tst;
 import type { Compiler } from './compiler';
 
+let stdLibraries : Record<string,string> = undefined;
 @Injectable()
 export class PlaygroundService {
     constructor() {
@@ -21,18 +22,53 @@ export class PlaygroundService {
     private async loadCompiler() {
         this.compiler = (await import('./compiler')).Compiler;
         globalThis.ts = this.compiler.ts;
+        await this.loadStdLibraries()
     }
 
     load() {
         return this._loadPromise ??= this.loadCompiler();
     }
     
+    stdLibraries : string[] = [
+        'lib.es2016.d.ts',
+        'lib.es2015.d.ts',
+        'lib.es5.d.ts',
+        'lib.es2015.core.d.ts',
+        'lib.es2015.collection.d.ts',
+        'lib.es2015.iterable.d.ts',
+        'lib.es2015.symbol.d.ts',
+        'lib.es2015.generator.d.ts',
+        'lib.es2015.promise.d.ts',
+        'lib.es2015.proxy.d.ts',
+        'lib.es2015.reflect.d.ts',
+        'lib.es2015.symbol.wellknown.d.ts',
+        'lib.es2016.array.include.d.ts'
+    ]
+
+    async loadStdLibraries() {
+        if (stdLibraries)
+            return;
+        
+        let map : Record<string,string> = {};
+
+        await Promise.all(this.stdLibraries.map(async f => {
+            let text = await (await fetch(`/assets/typescript-stdlib/${f}`)).text();
+            map[f] = text;
+        }));
+
+        stdLibraries = map;
+    }
+
     transpilerHost(sourceFile : tst.SourceFile, write : (output : string) => void) {
         return <tst.CompilerHost>{
             getSourceFile: (fileName) => {
                 if (fileName === "module.ts")
                     return sourceFile;
             
+                if (stdLibraries && stdLibraries[fileName])
+                    return this.compiler.ts.createSourceFile(fileName, stdLibraries[fileName], ts.ScriptTarget.Latest);
+                
+                console.error(`Typescript requested unknown file '${fileName}'`);
                 return undefined;
             },
             writeFile: (name, text) => {
@@ -55,7 +91,7 @@ export class PlaygroundService {
         await this.load();
 
         let options : tst.CompilerOptions = {
-            ...ts.getDefaultCompilerOptions(),
+            ...this.compiler.ts.getDefaultCompilerOptions(),
             ...<tst.CompilerOptions>{
                 target: ts.ScriptTarget.ES2016,
                 module: ts.ModuleKind.CommonJS,
@@ -69,7 +105,7 @@ export class PlaygroundService {
             }
         };
         
-        const sourceFile = ts.createSourceFile("module.ts", code, options.target!);
+        const sourceFile = this.compiler.ts.createSourceFile("module.ts", code, options.target!);
         let outputText: string | undefined;
         const compilerHost = this.transpilerHost(sourceFile, output => outputText = output);
         const program = ts.createProgram(["module.ts"], options, compilerHost);
