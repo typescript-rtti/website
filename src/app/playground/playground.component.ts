@@ -158,7 +158,7 @@ export class PlaygroundComponent {
         typesLoaded = true;
     
         let typings = {
-            'typescript-rtti': 'https://unpkg.com/typescript-rtti@0.2.0/dist/lib/reflect.d.ts'
+            'typescript-rtti': 'https://unpkg.com/typescript-rtti@0.4.0/dist/lib/reflect.d.ts'
         };
     
         Object.keys(typings).map(async (importName) => {
