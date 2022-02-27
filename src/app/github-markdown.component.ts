@@ -17,7 +17,7 @@ import { combineLatest } from "rxjs";
     ]
 })
 export class GithubMarkdownComponent {
-    constructor(private route : ActivatedRoute) {}
+    constructor() {}
 
     private _path : string;
 
@@ -48,20 +48,6 @@ export class GithubMarkdownComponent {
         this.readme = this.readme.replace(/\.\/logo-long.svg/g, '/assets/logo-long.svg');
         this.readme = this.readme.replace(/(\[!\[CircleCI\])/, "\n\n$1")
         this.readme = this.readme.replace(/^.*\[NPM\]\(.*?\).*$/mg, '');
-    }
-
-    ngOnInit() {
-        combineLatest([ this.route.data, this.route.paramMap ]).subscribe(async ([data, params]) => {
-            let path = data['path'];
-            this.name = params.get('name');
-            let response = await fetch(`https://raw.githubusercontent.com/typescript-rtti/typescript-rtti/main/${path}`);
-            let readme = await response.text();
-            this.readme = readme;
-            this.readme = this.readme.replace(/\.\/logo-long.svg/g, '/assets/logo-long.svg');
-            this.readme = this.readme.replace(/(\[!\[CircleCI\])/, "\n\n$1")
-            //this.readme = this.readme.replace(/^# !\[Alterior\].*$/mg, '')
-            this.readme = this.readme.replace(/^.*\[NPM\]\(.*?\).*$/mg, '');
-        });
     }
 
     name : string;
