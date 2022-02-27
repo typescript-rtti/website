@@ -138,7 +138,6 @@ export class PlaygroundComponent {
             this.compiled = true;
 
             if (this.enablePersistence) {
-                console.log(`Persisting to URL`);
                 window.history.replaceState(undefined, undefined, `#${btoa(this._source)}`);
             }
 
@@ -146,6 +145,7 @@ export class PlaygroundComponent {
     }
 
     async compileAndRun() {
+        console.log(`Compiling...`);
         let { js, output } = await this.playground.compileAndRun(this.source);
         console.log(`Compiled.`);
         this.js = js;
