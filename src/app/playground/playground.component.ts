@@ -1,6 +1,6 @@
 import { Component, ContentChild, ElementRef, Input, ViewChild } from "@angular/core";
 import { EditorComponent } from "ngx-monaco-editor";
-import { PlaygroundService } from "../playground.service";
+import { PlaygroundService, RTTI_VERSION } from "../playground.service";
 import type * as monacoT from 'monaco-editor';
 
 declare let monaco;
@@ -84,6 +84,11 @@ export class PlaygroundComponent {
         });
     }
 
+    get rttiVersion() { return RTTI_VERSION; }
+    get tsVersion() {
+        return this.playground.tsVersion;
+    }
+
     monacoOptionsTS = {
         theme: 'vs', 
         language: 'typescript',
@@ -158,7 +163,7 @@ export class PlaygroundComponent {
         typesLoaded = true;
     
         let typings = {
-            'typescript-rtti': 'https://unpkg.com/typescript-rtti@0.4.2/dist/lib/reflect.d.ts'
+            'typescript-rtti': `https://unpkg.com/typescript-rtti@${RTTI_VERSION}/dist/lib/reflect.d.ts`
         };
     
         Object.keys(typings).map(async (importName) => {

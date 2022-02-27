@@ -5,6 +5,9 @@ declare var ts : typeof tst;
 import type { Compiler } from './compiler';
 
 let stdLibraries : Record<string,string> = undefined;
+
+export const RTTI_VERSION = '0.4.3';
+
 @Injectable()
 export class PlaygroundService {
     constructor() {
@@ -15,6 +18,16 @@ export class PlaygroundService {
 
     private async loadModule(src : string) {
         return eval(`import(${JSON.stringify(src)})`);
+    }
+
+    get tsVersion() {
+        if (!this.compiler)
+            return '?.?.?';
+        return this.compiler.ts.version;
+    }
+
+    get rttiVersion() { 
+        return RTTI_VERSION;
     }
 
     compiler : typeof Compiler;
