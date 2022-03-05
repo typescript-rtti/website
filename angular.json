@@ -45,12 +45,16 @@
           "configurations": {
             "production": {
               "buildOptimizer": false,
-              "optimization": false,
+              "optimization": {
+                "scripts": false,
+                "styles": true,
+                "fonts": true 
+              },
               "budgets": [
                 {
                   "type": "initial",
                   "maximumWarning": "1mb",
-                  "maximumError": "2mb"
+                  "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",
