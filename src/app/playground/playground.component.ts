@@ -169,6 +169,7 @@ export class PlaygroundComponent {
         typesLoaded = true;
     
         let typings = {
+            'reflect-metadata': `https://unpkg.com/reflect-metadata@0.1.13/index.d.ts`,
             'typescript-rtti': `https://unpkg.com/typescript-rtti@${RTTI_VERSION}/dist/lib/reflect.d.ts`
         };
     
