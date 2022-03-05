@@ -158,6 +158,12 @@ export class PlaygroundComponent {
     }
 
     loadTypes() {
+        monaco.languages.typescript.typescriptDefaults.setCompilerOptions(<monacoT.languages.typescript.CompilerOptions>{
+            ...monaco.languages.typescript.typescriptDefaults.getCompilerOptions(),
+            emitDecoratorMetadata: true,
+            experimentalDecorators: true
+        });
+
         if (typesLoaded)
             return;
         typesLoaded = true;
