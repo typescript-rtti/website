@@ -6,7 +6,7 @@ import type { Compiler } from './compiler';
 
 let stdLibraries : Record<string,string> = undefined;
 
-export const RTTI_VERSION = '0.4.17';
+export const RTTI_VERSION = '0.4.18';
 
 @Injectable()
 export class PlaygroundService {
