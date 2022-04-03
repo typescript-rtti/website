@@ -8,6 +8,7 @@ import { HomeComponent } from './home/home.component';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatExpansionModule } from '@angular/material/expansion'
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { PlaygroundService } from './playground.service';
 import { PlaygroundComponent } from './playground/playground.component';
@@ -34,6 +35,7 @@ import { GithubMarkdownRouteComponent } from './github-markdown-route.component'
     FormsModule,
     MatButtonModule,
     MatTabsModule,
+    MatExpansionModule,
     MonacoEditorModule.forRoot({
       baseUrl: './assets'
     })

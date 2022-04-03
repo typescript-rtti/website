@@ -2,10 +2,14 @@ import { Component, ContentChild, ElementRef, Input, ViewChild } from "@angular/
 import { EditorComponent } from "ngx-monaco-editor";
 import { PlaygroundService, RTTI_VERSION } from "../playground.service";
 import type * as monacoT from 'monaco-editor';
+import type * as tst from 'typescript';
 
 declare let monaco;
 
 let typesLoaded = false;
+
+let defaultTSSettings;
+
 
 @Component({
     selector: 'rtti-playground',
@@ -36,7 +40,48 @@ export class PlaygroundComponent {
         if (!data || data === '')
             return;
         console.log(`Loading from: ${data}`);
-        this.source = atob(data);
+        let decoded = atob(data);
+
+        if (decoded.startsWith('|V2|')) {
+            let obj = JSON.parse(decoded.slice(4));
+            this._compilerOptions = obj.compilerOptions;
+            this.loadCompilerOptionsToMonaco();
+            this.source = obj.source;
+        } else {
+            this.source = decoded;
+        }
+    }
+
+    _compilerOptions: string = ``;
+
+    get compilerOptions() {
+        return this._compilerOptions;
+    }
+
+    private loadCompilerOptionsToMonaco() {
+        if (typeof monaco === 'undefined')
+            return;
+        
+        if (!defaultTSSettings)
+            defaultTSSettings = monaco.languages.typescript.typescriptDefaults.getCompilerOptions();
+
+        try {
+            monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+                ...defaultTSSettings,
+                ...JSON.parse(this._compilerOptions)
+            });
+        } catch (e) {
+            console.log(`Failed to set Monaco TS options: ${e.message}`);
+        }
+    }
+
+    set compilerOptions(value) {
+        this._compilerOptions = value;
+        this.loadCompilerOptionsToMonaco();
+        setTimeout(() => {
+            this.saveToPersistence();
+            this.compileAndRun()
+        });
     }
 
     @ViewChild('sourceEditor')
@@ -110,6 +155,16 @@ export class PlaygroundComponent {
         minimap: { enabled: false }
     };
 
+    monacoOptionsJSON = {
+        theme: 'vs', 
+        language: 'json',
+        automaticLayout: true,
+        wordWrap: 'on',
+        wrappingStrategy: 'advanced',
+        fontSize: 12,
+        minimap: { enabled: false }
+    };
+
     monacoOptionsOutput = {
         theme: 'vs', 
         language: 'text',
@@ -142,16 +197,24 @@ export class PlaygroundComponent {
             await this.compileAndRun();
             this.compiled = true;
 
-            if (this.enablePersistence) {
-                window.history.replaceState(undefined, undefined, `#${btoa(this._source)}`);
-            }
+            this.saveToPersistence();
 
         }, 100)
     }
 
+    private saveToPersistence() {
+        if (this.enablePersistence) {
+            window.history.replaceState(undefined, undefined, `#${btoa(`|V2|${JSON.stringify({ 
+                source: this._source,
+                compilerOptions: this._compilerOptions
+            })}`)}`);
+        }
+    }
+
     async compileAndRun() {
+        let compilerOptions = JSON.parse(this.compilerOptions);
         console.log(`Compiling...`);
-        let { js, output } = await this.playground.compileAndRun(this.source);
+        let { js, output } = await this.playground.compileAndRun(this.source, compilerOptions);
         console.log(`Compiled.`);
         this.js = js;
         this.output = output;
@@ -200,6 +263,7 @@ export class PlaygroundComponent {
 
     monacoReady() {
         this.loadTypes();
+        this.loadCompilerOptionsToMonaco();
 
         let editor : monacoT.editor.ICodeEditor = this.sourceEditor['_editor'];
         let container = this.sizer.nativeElement;

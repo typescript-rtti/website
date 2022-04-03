@@ -34,6 +34,19 @@
     <pre id="output">{{output}}</pre>
 
     <em>Uses typescript-rtti@{{rttiVersion}} and typescript@{{tsVersion}}</em>
+
+    <mat-expansion-panel [expanded]="compilerOptions !== ''">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Typescript Compiler Options
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        
+        <ngx-monaco-editor
+            [options]="monacoOptionsJSON"
+            [(ngModel)]="compilerOptions"
+            ></ngx-monaco-editor>
+    </mat-expansion-panel>
 </div>
 <div id="code-input" #codeInput>
     <ng-content selector="code"></ng-content>

@@ -100,8 +100,10 @@ export class PlaygroundService {
         };
     }
 
-    async compile(code : string): Promise<string> {
+    async compile(code : string, compilerOptions: Partial<tst.CompilerOptions> = {}): Promise<string> {
         await this.load();
+
+        compilerOptions = this.compiler.ts.convertCompilerOptionsFromJson(compilerOptions, '/').options;
 
         let options : tst.CompilerOptions = {
             ...this.compiler.ts.getDefaultCompilerOptions(),
@@ -115,7 +117,8 @@ export class PlaygroundService {
                 emitDecoratorMetadata: false,
                 suppressOutputPathCheck: true,
                 rtti: <any>{ trace: false }
-            }
+            },
+            ...compilerOptions
         };
         
         const sourceFile = this.compiler.ts.createSourceFile("module.ts", code, options.target!);
@@ -143,8 +146,8 @@ export class PlaygroundService {
         return outputText;
     }
 
-    async compileAndRun(input : string) {
-        let js = await this.compile(input);
+    async compileAndRun(input : string, compilerOptions: Partial<tst.CompilerOptions> = {}) {
+        let js = await this.compile(input, compilerOptions);
 
         let runner = eval(`(function(module, exports, require, console) {
             ${js}
