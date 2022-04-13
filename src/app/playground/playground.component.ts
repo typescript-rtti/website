@@ -212,7 +212,7 @@ export class PlaygroundComponent {
     }
 
     async compileAndRun() {
-        let compilerOptions = JSON.parse(this.compilerOptions);
+        let compilerOptions = this.compilerOptions ? JSON.parse(this.compilerOptions) : undefined;
         console.log(`Compiling...`);
         let { js, output } = await this.playground.compileAndRun(this.source, compilerOptions);
         console.log(`Compiled.`);
