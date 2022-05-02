@@ -10,6 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "typescript": "^4.5.5",
-    "typescript-rtti": "^0.5.6"
+    "typescript-rtti": "^0.6.1"
   }
 }
